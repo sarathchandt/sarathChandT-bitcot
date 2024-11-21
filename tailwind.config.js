@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       colors:{
-        initialButton:"#7ECFE8"
+        initialButton:"#7ECFE8",
+        formButtonBlue:"#006EF7"
       }
     },
   },
