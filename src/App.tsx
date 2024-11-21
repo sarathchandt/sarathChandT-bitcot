@@ -14,12 +14,8 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [tempContacts, setTempContacts] = useState<Contact[]>([]);
-  const [showViewDetailsModal, setShowViewDetailsModal] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contact>();
   const [showModal, setShowModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
   const [modalName, setModalName] = useState("");
 
   // store the contacts in two states to get the original data when the search performed
@@ -90,14 +86,14 @@ function App() {
 
   const selectAContact = (contact: Contact) => {
     setSelectedContact(contact);
-    setShowViewDetailsModal(true);
     setModalName('view')
+    setShowModal(true);
   };
 
   const onEditContact = (contact: Contact, index: number) => {
     setSelectedContact({ ...contact, index });
-    setShowEditModal(true);
     setModalName('edit')
+    setShowModal(true);
   };
 
   // edit function
@@ -130,7 +126,7 @@ function App() {
 
         return temp;
       });
-      setShowEditModal(false);
+      setShowModal(false);
       toast.success("contact Edited sucessfuly", {
         position: "bottom-center",
       });
@@ -139,8 +135,8 @@ function App() {
 
   const onDeleteContact = (contact: Contact, index: number) => {
     setSelectedContact({ ...contact, index });
-    setShowDeleteModal(true);
     setModalName('delete')
+    setShowModal(true);
   };
 
   // delete function
@@ -161,7 +157,7 @@ function App() {
         temp.splice(index, 1);
         return temp;
       });
-      setShowDeleteModal(false);
+      setShowModal(false);
       toast.success("contact deleted sucessfuly", {
         position: "bottom-center",
       });
@@ -177,8 +173,8 @@ function App() {
             <button
               className="bg-initialButton w-full  md:py-3 py-1 rounded-[10px] flex flex-row justify-center gap-4 "
               onClick={() => {
-                setShowModal(true);
                 setModalName('add')
+                setShowModal(true);
               }}
             >
               <p className="md:text-3xl text-xl font-semibold text-white my-auto">
@@ -189,13 +185,13 @@ function App() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="#ffffff"
                 className="size-10 my-auto"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
@@ -229,8 +225,9 @@ function App() {
           onClose={() => {
             setShowModal(false);
           }}
-          children={
-            <AddNUpdateContactComponent
+         
+        >
+         {modalName== "add" &&  <AddNUpdateContactComponent
               constactData={{
                 name: "",
                 email: "",
@@ -241,58 +238,36 @@ function App() {
                 setShowModal(false);
               }}
               onSubmit={addContact}
-            />
-          }
-        />
-      )}
-      {showViewDetailsModal && (
-        <ModalComponent
-          onClose={() => {
-            setShowViewDetailsModal(false);
-          }}
-          children={
-            <ContactDetailsComponent
-              contact={selectedContact!}
-              onClose={() => {
-                setShowViewDetailsModal(false);
-              }}
-            />
-          }
-        />
-      )}
-
-      {showEditModal && (
-        <ModalComponent
-          onClose={() => {
-            setShowEditModal(false);
-          }}
-          children={
-            <AddNUpdateContactComponent
+            />}
+            {
+              modalName == "edit" && <AddNUpdateContactComponent
               constactData={selectedContact}
               onClose={() => {
-                setShowEditModal(false);
+                setShowModal(false);
               }}
               onSubmit={editContact}
             />
-          }
-        />
-      )}
-      {showDeleteModal && (
-        <ModalComponent
-          onClose={() => {
-            setShowDeleteModal(false);
-          }}
-          children={
-            <DeleteComponent
+            }
+            {
+              modalName == "delete" && <DeleteComponent
               constactData={selectedContact}
               onClose={() => {
-                setShowDeleteModal(false);
+                setShowModal(false);
               }}
               onSubmit={deleteContact}
             />
-          }
-        />
+            }
+            {
+              modalName == "view" && <ContactDetailsComponent
+              contact={selectedContact!}
+              onClose={() => {
+                setShowModal(false);
+              }}
+            />
+            }
+        </ModalComponent>
       )}
+     
     </div>
   );
 }
